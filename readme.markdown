@@ -40,5 +40,8 @@ You can also add messages to your code that are only intended to be seen by you 
 
 ## Changelog
 
+### 0.1.1
+* Updated prefix on ID in view file
+
 ### 0.1
 * Initial release. Refactored into standalone class from previous versions where the methods were included in whatever class used them.

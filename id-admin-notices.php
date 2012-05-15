@@ -32,7 +32,7 @@ if( !class_exists( 'IDAdminNotices' ) )
 		private static $instance;
 		private $notices, $updatedNotices, $userNoticeCount, $accessiblePrivateVars, $debugMode;
 		const NAME		= 'IDAdminNotices';
-		const VERSION	= '0.1';
+		const VERSION	= '0.1.1';
 		const PREFIX	= 'idan_';
 		
 		/**
