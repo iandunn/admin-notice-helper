@@ -32,7 +32,7 @@ if( !class_exists( 'IDAdminNotices' ) )
 		private static $instance;
 		private $notices, $updatedNotices, $userNoticeCount, $accessiblePrivateVars, $debugMode;
 		const NAME		= 'IDAdminNotices';
-		const VERSION	= '0.1.1';
+		const VERSION	= '0.1.2';
 		const PREFIX	= 'idan_';
 		
 		/**
@@ -120,6 +120,8 @@ if( !class_exists( 'IDAdminNotices' ) )
 		 */
 		public function mEnqueue( $message, $type = 'update', $mode = 'user' )
 		{
+			$message = apply_filters( self::PREFIX . 'enqueue-message', $message );
+			
 			if( !is_string( $message ) )
 				return false;
 				
@@ -142,8 +144,6 @@ if( !class_exists( 'IDAdminNotices' ) )
 		
 		/**
 		 * Displays updates and errors
-		 * NOTE: In order to allow HTML in the output, any unsafe variables passed to mEnqueue() need to be escaped before they're passed in, instead of escaping here.
-		 *
 		 * @author Ian Dunn <ian@iandunn.name>
 		 */
 		public function mPrint()
@@ -157,10 +157,6 @@ if( !class_exists( 'IDAdminNotices' ) )
 				{
 					$message = '';
 					$class = $type == 'updates' ? 'updated' : 'error';
-					
-					foreach( $this->notices[ $type ] as $messageData )
-						if( $messageData[ 'mode' ] == 'user' || $this->debugMode )
-							$message .= '<p>'. $messageData[ 'message' ] .'</p>';
 					
 					require( dirname( __FILE__ ) . '/v-admin-notice.php' );
 					
