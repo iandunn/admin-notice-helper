@@ -5,7 +5,9 @@ Requires: PHP 5 and WordPress 2.0.11
 
 
 ## Description
+
 A clean and convenient way for WordPress plugins and themes to display messages and errors to the user within the Administration Panels.
+
 
 ## Usage
 
@@ -13,16 +15,16 @@ Include the class from your plugin's main file or theme's functions.php file. Th
 
 	require( dirname( __FILE__ ) . '/includes/id-admin-notices/id-admin-notices.php' );
 	
-Call the mEnqueue() method anywhere in your code after WordPress fires the 'init' hook. If you call mEnqueue() before the init hook fires, it won't work. If you want to call mEnqeue() during a callback to the init hook, make sure the callback is registered with a priority of 10 or higher.
+Call the enqueue() method anywhere in your code after WordPress fires the 'init' hook. If you call enqueue() before the init hook fires, it won't work. If you want to call enqueue() during a callback to the init hook, make sure the callback is registered with a priority of 10 or higher.
 
 	function foo()
 	{
-		$notices = IDAdminNotices::cGetSingleton();
+		$notices = IDAdminNotices::getSingleton();
 		
 		if( $success )
-			$notices->mEnqueue( 'Successful' );
+			$notices->enqueue( 'Successful' );
 		else
-			$notices->mEnqueue( 'Failure', 'error' );
+			$notices->enqueue( 'Failure', 'error' );
 	}
 	add_action( 'save_posts', 'foo' );
 	
@@ -30,18 +32,10 @@ You can also add messages to your code that are only intended to be seen by you 
 
 	function foo()
 	{
-		$notices = IDAdminNotices::cGetSingleton();
+		$notices = IDAdminNotices::getSingleton();
 		$notices->debugMode = true;
 		
 		if( !$success )
-			$notices->mEnqueue( 'Detailed error message', 'error', 'debug' );
+			$notices->mnqueue( 'Detailed error message', 'error', 'debug' );
 	}
 	add_action( 'save_posts', 'foo' );
-
-## Changelog
-
-### 0.1.1
-* Updated prefix on ID in view file
-
-### 0.1
-* Initial release. Refactored into standalone class from previous versions where the methods were included in whatever class used them.

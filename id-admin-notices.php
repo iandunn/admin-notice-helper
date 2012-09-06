@@ -32,27 +32,29 @@ if( !class_exists( 'IDAdminNotices' ) )
 		private static $instance;
 		private $notices, $updatedNotices, $userNoticeCount, $accessiblePrivateVars, $debugMode;
 		const NAME		= 'IDAdminNotices';
-		const VERSION	= '0.1.2';
+		const VERSION	= '0.1.3';
 		const PREFIX	= 'idan_';
 		
 		/**
 		 * Constructor
+		 * @mvc Controller
 		 * @author Ian Dunn <ian@iandunn.name>
 		 */
 		private function __construct()
 		{
 			// NOTE: Make sure you update the did_action() parameter in the corresponding callback method when changing the hooks here
-			add_action( 'init',						array( $this, 'cInit' ), 9 );	// needs to run before other plugin's init callbacks so that they can enqueue messages in their init callbacks
-			add_action( 'admin_notices',			array( $this, 'mPrint' ) );
-			add_action( 'shutdown',					array( $this, 'cShutdown' ) );
+			add_action( 'init',				array( $this, 'init' ), 9 );	// needs to run before other plugin's init callbacks so that they can enqueue messages in their init callbacks
+			add_action( 'admin_notices',	array( $this, 'printMessages' ) );
+			add_action( 'shutdown',			array( $this, 'shutdown' ) );
 		}
 		
 		/**
 		 * Provides access to a single instances of the class using the singleton pattern
+		 * @mvc Controller
 		 * @author Ian Dunn <ian@iandunn.name>
 		 * @return object
 		 */
-		public static function cGetSingleton()
+		public static function getSingleton()
 		{
 			if( !isset( self::$instance ) )
 			{
@@ -65,9 +67,10 @@ if( !class_exists( 'IDAdminNotices' ) )
 		
 		/**
 		 * Initializes variables
+		 * @mvc Controller
 		 * @author Ian Dunn <ian@iandunn.name>
 		 */
-		public function cInit()
+		public function init()
 		{
 			if( did_action( 'init' ) !== 1 )
 				return;
@@ -83,6 +86,7 @@ if( !class_exists( 'IDAdminNotices' ) )
 		
 		/**
 		 * Public getter for private variables
+		 * @mvc Model
 		 * @author Ian Dunn <ian@iandunn.name>
 		 * @param string $variable
 		 * @return mixed
@@ -97,6 +101,7 @@ if( !class_exists( 'IDAdminNotices' ) )
 		
 		/**
 		 * Public setter for private variables
+		 * @mvc Model
 		 * @author Ian Dunn <ian@iandunn.name>
 		 * @param string $variable
 		 * @param mixed $value
@@ -112,13 +117,14 @@ if( !class_exists( 'IDAdminNotices' ) )
 		/**
 		 * Queues up a message to be displayed to the user
 		 * NOTE: In order to allow HTML in the output, any unsafe variables in $message need to be escaped before they're passed in, instead of escaping here.
-		 *		 
+		 *
+		 * @mvc Model
 		 * @author Ian Dunn <ian@iandunn.name>
 		 * @param string $message The text to show the user
 		 * @param string $type 'update' for a success or notification message, or 'error' for an error message
 		 * @param string $mode 'user' if it's intended for the user, or 'debug' if it's intended for the developer
 		 */
-		public function mEnqueue( $message, $type = 'update', $mode = 'user' )
+		public function enqueue( $message, $type = 'update', $mode = 'user' )
 		{
 			$message = apply_filters( self::PREFIX . 'enqueue-message', $message );
 			
@@ -144,9 +150,10 @@ if( !class_exists( 'IDAdminNotices' ) )
 		
 		/**
 		 * Displays updates and errors
+		 * @mvc Model
 		 * @author Ian Dunn <ian@iandunn.name>
 		 */
-		public function mPrint()
+		public function printMessages()
 		{
 			if( did_action( 'admin_notices' ) !== 1 )
 				return;
@@ -169,9 +176,10 @@ if( !class_exists( 'IDAdminNotices' ) )
 		
 		/**
 		 * Writes notices to the database
+		 * @mvc Controller
 		 * @author Ian Dunn <ian@iandunn.name>
 		 */
-		public function cShutdown()
+		public function shutdown()
 		{
 			if( did_action( 'shutdown' ) !== 1 )
 				return;
@@ -180,8 +188,8 @@ if( !class_exists( 'IDAdminNotices' ) )
 				update_option( self::PREFIX . 'notices', $this->notices );
 		}
 	} // end IDAdminNotices
+	
+	IDAdminNotices::getSingleton();	// Create the instance immediately to make sure hook callbacks are registered in time
 }
-
-IDAdminNotices::cGetSingleton();	// Create the instance immediately to make sure hook callbacks are registered in time
 
 ?>
