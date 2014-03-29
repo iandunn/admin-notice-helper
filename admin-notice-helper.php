@@ -25,13 +25,13 @@ if ( ! class_exists( 'Admin_Notice_Helper' ) ) {
 
 	class Admin_Notice_Helper {
 		// Declare variables and constants
-		private static $instance;
-		private $notices, $updatedNotices;
+		protected static $instance;
+		protected $notices, $updatedNotices;
 
 		/**
 		 * Constructor
 		 */
-		private function __construct() {
+		protected function __construct() {
 			add_action( 'init',          array( $this, 'init' ), 9 );         // needs to run before other plugin's init callbacks so that they can enqueue messages in their init callbacks
 			add_action( 'admin_notices', array( $this, 'printMessages' ) );
 			add_action( 'shutdown',      array( $this, 'shutdown' ) );
