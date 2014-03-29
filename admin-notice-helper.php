@@ -20,18 +20,14 @@
 if( $_SERVER['SCRIPT_FILENAME'] == __FILE__ )
 	die( 'Access denied.' );
 
-if( !class_exists( 'IDAdminNotices' ) )
+if( !class_exists( 'Admin_Notice_Helper' ) )
 {
-	/**
-	 * @package IDAdminNotices
-	 * @author Ian Dunn <ian@iandunn.name>
-	 */
-	class IDAdminNotices
+	class Admin_Notice_Helper
 	{
 		// Declare variables and constants
 		private static $instance;
 		private $notices, $updatedNotices, $userNoticeCount, $accessiblePrivateVars, $debugMode;
-		const NAME		= 'IDAdminNotices';
+		const NAME		= 'Admin_Notice_Helper';
 		const VERSION	= '0.1.3';
 		const PREFIX	= 'idan_';
 		
@@ -187,9 +183,9 @@ if( !class_exists( 'IDAdminNotices' ) )
 			if( $this->updatedNotices )
 				update_option( self::PREFIX . 'notices', $this->notices );
 		}
-	} // end IDAdminNotices
+	} // end Admin_Notice_Helper
 	
-	IDAdminNotices::getSingleton();	// Create the instance immediately to make sure hook callbacks are registered in time
+	Admin_Notice_Helper::getSingleton();	// Create the instance immediately to make sure hook callbacks are registered in time
 }
 
 ?>
