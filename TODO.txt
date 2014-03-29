@@ -1,0 +1,2 @@
+* Try to get it running earlier than init. Don't remember what the problem was.
+* Add support for adding notices to a group, and only printing that group. This avoids conflicts when multiple plugins use it at same time.
