@@ -28,7 +28,7 @@ if ( ! class_exists( 'Admin_Notice_Helper' ) ) {
 	class Admin_Notice_Helper {
 		// Declare variables and constants
 		protected static $instance;
-		protected $notices, $notices_were_updated, $notice_count;
+		protected $notices, $notices_were_updated;
 
 		/**
 		 * Constructor
@@ -60,7 +60,6 @@ if ( ! class_exists( 'Admin_Notice_Helper' ) ) {
 		public function init() {
 			$defaultNotices              = array( 'updates' => array(), 'errors' => array() );
 			$this->notices               = array_merge( $defaultNotices, get_option( 'anh_notices', array() ) );
-			$this->notice_count          = array( 'updates' => count( $this->notices['updates'] ), 'errors' => count( $this->notices['errors'] ) );
 			$this->notices_were_updated  = false;
 		}
 
@@ -75,16 +74,8 @@ if ( ! class_exists( 'Admin_Notice_Helper' ) ) {
 		public function enqueue( $message, $type = 'update' ) {
 			$message = apply_filters( 'anh_enqueue-message', $message );
 
-			if ( ! is_string( $message ) ) {
-				return false;
-			}
-
-			if ( ! isset( $this->notices[ $type . 's' ] ) ) {
-				return false;
-			}
-
 			array_push( $this->notices[ $type . 's' ], array(
-				'message' => $message,
+				'message' => (string) $message,
 				'type'    => $type,
 			) );
 
@@ -106,7 +97,6 @@ if ( ! class_exists( 'Admin_Notice_Helper' ) ) {
 
 					$this->notices[ $type ]      = array();
 					$this->notices_were_updated  = true;
-					$this->notice_count[ $type ] = 0;
 				}
 			}
 		}
