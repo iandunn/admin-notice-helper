@@ -17,8 +17,9 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-if ( $_SERVER['SCRIPT_FILENAME'] == __FILE__ )
+if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Access denied.' );
+}
 
 if ( ! class_exists( 'Admin_Notice_Helper' ) ) {
 
