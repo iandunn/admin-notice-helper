@@ -66,19 +66,12 @@ if ( ! class_exists( 'Admin_Notice_Helper' ) ) {
 		/**
 		 * Queues up a message to be displayed to the user
 		 *
-		 * NOTE: In order to allow HTML in the output, any unsafe variables in $message need to be escaped before they're passed in, instead of escaping here.
-		 *
 		 * @param string $message The text to show the user
 		 * @param string $type    'update' for a success or notification message, or 'error' for an error message
 		 */
 		public function enqueue( $message, $type = 'update' ) {
-			$message = apply_filters( 'anh_enqueue-message', $message );
-
-			array_push( $this->notices[ $type . 's' ], array(
-				'message' => (string) $message,
-				'type'    => $type,
-			) );
-
+			$message = (string) apply_filters( 'anh_enqueue-message', $message );
+			$this->notices[ $type ][] = $message;
 			$this->notices_were_updated = true;
 
 			return true;
@@ -89,9 +82,8 @@ if ( ! class_exists( 'Admin_Notice_Helper' ) ) {
 		 */
 		public function print_notices() {
 			foreach ( array( 'updates', 'errors' ) as $type ) {
-				if ( $this->notices[ $type ] && $this->notice_count[ $type ] ) {
-					$message = '';
-					$class   = $type == 'updates' ? 'updated' : 'error';
+				if ( count( $this->notices[ $type ] ) ) {
+					$class = $type == 'updates' ? 'updated' : 'error';
 
 					require( dirname( __FILE__ ) . '/admin-notice.php' );
 
