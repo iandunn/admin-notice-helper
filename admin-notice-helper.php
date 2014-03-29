@@ -1,5 +1,7 @@
 <?php
 
+// https://github.com/iandunn/admin-notice-helper
+
 /*  
  * Copyright 2014 Ian Dunn (email : ian@iandunn.name)
  * 
@@ -102,8 +104,8 @@ if ( ! class_exists( 'Admin_Notice_Helper' ) ) {
 
 					require( dirname( __FILE__ ) . '/admin-notice.php' );
 
-					$this->notices[ $type ]         = array();
-					$this->notices_were_updated           = true;
+					$this->notices[ $type ]      = array();
+					$this->notices_were_updated  = true;
 					$this->notice_count[ $type ] = 0;
 				}
 			}
@@ -120,4 +122,10 @@ if ( ! class_exists( 'Admin_Notice_Helper' ) ) {
 	} // end Admin_Notice_Helper
 
 	Admin_Notice_Helper::get_singleton(); // Create the instance immediately to make sure hook callbacks are registered in time
+
+	if ( ! function_exists( 'add_notice' ) ) {
+		function add_notice( $message, $type = 'update' ) {
+			Admin_Notice_Helper::get_singleton()->enqueue( $message, $type );
+		}
+	}
 }
