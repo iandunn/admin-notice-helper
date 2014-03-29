@@ -58,8 +58,8 @@ if ( ! class_exists( 'Admin_Notice_Helper' ) ) {
 		 * Initializes variables
 		 */
 		public function init() {
-			$defaultNotices              = array( 'updates' => array(), 'errors' => array() );
-			$this->notices               = array_merge( $defaultNotices, get_option( 'anh_notices', array() ) );
+			$default_notices             = array( 'update' => array(), 'error' => array() );
+			$this->notices               = array_merge( $default_notices, get_option( 'anh_notices', array() ) );
 			$this->notices_were_updated  = false;
 		}
 
@@ -70,20 +70,21 @@ if ( ! class_exists( 'Admin_Notice_Helper' ) ) {
 		 * @param string $type    'update' for a success or notification message, or 'error' for an error message
 		 */
 		public function enqueue( $message, $type = 'update' ) {
-			$message = (string) apply_filters( 'anh_enqueue-message', $message );
-			$this->notices[ $type ][] = $message;
-			$this->notices_were_updated = true;
+			if ( in_array( $message, array_values( $this->notices[ $type ] ) ) ) {
+				return;
+			}
 
-			return true;
+			$this->notices[ $type ][]   = (string) apply_filters( 'anh_enqueue_message', $message );
+			$this->notices_were_updated = true;
 		}
 
 		/**
 		 * Displays updates and errors
 		 */
 		public function print_notices() {
-			foreach ( array( 'updates', 'errors' ) as $type ) {
+			foreach ( array( 'update', 'error' ) as $type ) {
 				if ( count( $this->notices[ $type ] ) ) {
-					$class = $type == 'updates' ? 'updated' : 'error';
+					$class = $type == 'update' ? 'updated' : 'error';
 
 					require( dirname( __FILE__ ) . '/admin-notice.php' );
 
