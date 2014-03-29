@@ -26,14 +26,14 @@ if ( ! class_exists( 'Admin_Notice_Helper' ) ) {
 	class Admin_Notice_Helper {
 		// Declare variables and constants
 		protected static $instance;
-		protected $notices, $updatedNotices;
+		protected $notices, $notices_were_updated, $notice_count;
 
 		/**
 		 * Constructor
 		 */
 		protected function __construct() {
 			add_action( 'init',          array( $this, 'init' ), 9 );         // needs to run before other plugin's init callbacks so that they can enqueue messages in their init callbacks
-			add_action( 'admin_notices', array( $this, 'printMessages' ) );
+			add_action( 'admin_notices', array( $this, 'print_notices' ) );
 			add_action( 'shutdown',      array( $this, 'shutdown' ) );
 		}
 
@@ -44,7 +44,7 @@ if ( ! class_exists( 'Admin_Notice_Helper' ) ) {
 		 * @author Ian Dunn <ian@iandunn.name>
 		 * @return object
 		 */
-		public static function getSingleton() {
+		public static function get_singleton() {
 			if ( ! isset( self::$instance ) ) {
 				self::$instance = new Admin_Notice_Helper();
 			}
@@ -58,8 +58,8 @@ if ( ! class_exists( 'Admin_Notice_Helper' ) ) {
 		public function init() {
 			$defaultNotices              = array( 'updates' => array(), 'errors' => array() );
 			$this->notices               = array_merge( $defaultNotices, get_option( 'anh_notices', array() ) );
-			$this->userNoticeCount       = array( 'updates' => count( $this->notices['updates'] ), 'errors' => count( $this->notices['errors'] ) );
-			$this->updatedNotices        = false;
+			$this->notice_count          = array( 'updates' => count( $this->notices['updates'] ), 'errors' => count( $this->notices['errors'] ) );
+			$this->notices_were_updated  = false;
 		}
 
 		/**
@@ -86,7 +86,7 @@ if ( ! class_exists( 'Admin_Notice_Helper' ) ) {
 				'type'    => $type,
 			) );
 
-			$this->updatedNotices = true;
+			$this->notices_were_updated = true;
 
 			return true;
 		}
@@ -94,17 +94,17 @@ if ( ! class_exists( 'Admin_Notice_Helper' ) ) {
 		/**
 		 * Displays updates and errors
 		 */
-		public function printMessages() {
+		public function print_notices() {
 			foreach ( array( 'updates', 'errors' ) as $type ) {
-				if ( $this->notices[ $type ] && $this->userNoticeCount[ $type ] ) {
+				if ( $this->notices[ $type ] && $this->notice_count[ $type ] ) {
 					$message = '';
 					$class   = $type == 'updates' ? 'updated' : 'error';
 
 					require( dirname( __FILE__ ) . '/admin-notice.php' );
 
 					$this->notices[ $type ]         = array();
-					$this->updatedNotices           = true;
-					$this->userNoticeCount[ $type ] = 0;
+					$this->notices_were_updated           = true;
+					$this->notice_count[ $type ] = 0;
 				}
 			}
 		}
@@ -113,11 +113,11 @@ if ( ! class_exists( 'Admin_Notice_Helper' ) ) {
 		 * Writes notices to the database
 		 */
 		public function shutdown() {
-			if ( $this->updatedNotices ) {
+			if ( $this->notices_were_updated ) {
 				update_option( 'anh_notices', $this->notices );
 			}
 		}
 	} // end Admin_Notice_Helper
 
-	Admin_Notice_Helper::getSingleton(); // Create the instance immediately to make sure hook callbacks are registered in time
+	Admin_Notice_Helper::get_singleton(); // Create the instance immediately to make sure hook callbacks are registered in time
 }
