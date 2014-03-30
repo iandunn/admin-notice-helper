@@ -1,6 +1,13 @@
 <?php
 
-// https://github.com/iandunn/admin-notice-helper
+/*
+Name:        Admin Notice Helper
+URI:         https://github.com/iandunn/admin-notice-helper
+Version:     0.2
+Author:      Ian Dunn
+Author URI:  http://iandunn.name
+License:     GPLv2
+*/
 
 /*  
  * Copyright 2014 Ian Dunn (email : ian@iandunn.name)
