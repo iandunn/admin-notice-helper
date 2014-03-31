@@ -91,7 +91,7 @@ if ( ! class_exists( 'Admin_Notice_Helper' ) ) {
 		public function print_notices() {
 			foreach ( array( 'update', 'error' ) as $type ) {
 				if ( count( $this->notices[ $type ] ) ) {
-					$class = $type == 'update' ? 'updated' : 'error';
+					$class = 'update' == $type ? 'updated' : 'error';
 
 					require( dirname( __FILE__ ) . '/admin-notice.php' );
 
